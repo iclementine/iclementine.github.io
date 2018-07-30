@@ -1,47 +1,125 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely need to edit after that.
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'jekyll serve'. If you change this file, please restart the server process.
-
-# Configured by: iclementine(iclementine.outlook.com)
-
-# Site settings
-permalink: /:categories/:year/:month/:day/:title
-exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "LICENSE.md", "Gemfile", "Gemfile.lock"]
-title: Clementine's Blog
-# ítagline: Site Tagline
-name: Clementine Chan
-author: Clementine
-email: iclementine.outlook.com
-
-# Set time zone
+# ---------------- #
+#   Main Configs   #
+# ---------------- #
+baseurl:
+url: https://iclementine.github.io
+date_format: "ordinal"
+title: Clementine 的博客
+subtitle: "笔记和文档写作"
+description: "笔记"
+keywords: clementine
 timezone: Asia/Shanghai
+encoding: "utf-8"
+side_bar_repo_limit: 5
 
-# Write an awesome description for your new site below. You can edit this
-# line in _config.yml. It will appear in your document head meta (for
-# Google search results) and in your feed.xml site description.
-# A personal blog about python, latex and structure engineering.
-description: > # this > means to ignore newlines until "baseurl:"
-  Share some personal notes here.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site
-github_username:  iclementine
+# ---------------- #
+#      Author      #
+# ---------------- #
+author: Clementine
+organization: THU
+organization_url: # 
+github_username: iclementine
+location: Beijing, China
+email: iclementine@outlook.com
 
-# Build settings
-# markdown: kramdown -> already included in GitHub settings
-highlighter: rouge # or pygments or null
+# ---------------- #
+#    Navigation    #
+# ---------------- #
+navs:
+  -
+    href: /
+    label: 首页
 
-# GitHub settings
-#github: [metadata] # ? what's this for
+  -
+    href: /categories/
+    label: 分类
+
+#   -
+#     href: /archives/
+#     label: 归档
+
+  -
+    href: /wiki/
+    label: 维基
+
+  -
+    href: /links/
+    label: 链接
+
+  -
+    href: /about/
+    label: 关于
+
+# ---------------- #
+#       RSS        #
+# ---------------- #
+subscribe_rss: /feed.xml
+
+# ---------------- #
+#      Jekyll      #
+# ---------------- #
+markdown: kramdown
 kramdown:
-  input: GFM
-  hard_wrap: false
-  syntax_highlighter: rouge
-  toc_levels: 1..3
+    input: GFM
+highlighter: rouge
+paginate: 8
+lsi: false
+quiet: false
+excerpt_separator: "\n\n"
+permalink: /:year/:month/:day/:title/
+gems:
+    - jekyll-github-metadata
+    - rouge
+#     - jekyll-html-pipeline
+    - jekyll-paginate
+    - jekyll-sitemap
+    - jekyll-feed
+    - jemoji
+#     - jekyll-mentions
+collections:
+    wiki:
+        output: true
+        permalink: /wiki/:path/
 
-#gems:
-plugins:
-  - jekyll-coffeescript
-  - jekyll-paginate
+repository: iclementine/iclementine.github.io
+
+# ---------------- #
+#      Comments    #
+# ---------------- #
+# support provider: disqus, gitment, gitalk
+comments_provider: gitalk
+# !!!重要!!! 请修改下面这些信息为你自己申请的
+# !!!Important!!! Please modify infos below to yours
+# https://disqus.com
+disqus:
+    username: 
+# https://imsun.net/posts/gitment-introduction/
+gitment:
+    owner: iclementine
+    repo: iclementine.github.io
+    oauth:
+        client_id: 9b927e398c5a4595d2e3
+        client_secret: eda035f91e5a40e2d19d811f0bb66e5eeab32501
+# https://github.com/gitalk/gitalk#install
+gitalk:
+    #owner: mzlogin
+    #repo: blog-comments
+    #clientID: d2e1cbbd298958076462
+    #clientSecret: b42a4178e5fd4a7cf63189ef4b1453b05c375709
+# 在使用其它评论组件时可点击显示 Disqus
+lazy_load_disqus : false
+
+# ---------------- #
+#      Search      #
+# ---------------- #
+simple_jekyll_search:
+    # 是否支持全文搜索
+    fulltext: false
+    # 最多显示多少条搜索结果
+    limit: 10
+
+# ---------------- #
+#    Analytics     #
+# ---------------- #
+google:
+    analytics_id: UA-80669434-1
