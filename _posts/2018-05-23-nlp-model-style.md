@@ -1,7 +1,7 @@
 ---
 layout: post
 title: NLP 模型写作的两种风格
-categories: deep learning
+categories: deep_learning
 description: NLP 模型写作的两种风格， 算是对个人代码风格和抽象方式的一种探索和总结。
 keywords: deep learning, dynet
 --- 
