@@ -87,11 +87,11 @@ repository: iclementine/iclementine.github.io
 #      Comments    #
 # ---------------- #
 # support provider: disqus, gitment, gitalk
-comments_provider: gitalk
+comments_provider: gitment
 # !!!重要!!! 请修改下面这些信息为你自己申请的
 # !!!Important!!! Please modify infos below to yours
 # https://disqus.com
-disqus:
+#disqus:
     username: 
 # https://imsun.net/posts/gitment-introduction/
 gitment:
@@ -101,7 +101,7 @@ gitment:
         client_id: 9b927e398c5a4595d2e3
         client_secret: eda035f91e5a40e2d19d811f0bb66e5eeab32501
 # https://github.com/gitalk/gitalk#install
-gitalk:
+#gitalk:
     #owner: mzlogin
     #repo: blog-comments
     #clientID: d2e1cbbd298958076462
