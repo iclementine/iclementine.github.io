@@ -8,7 +8,7 @@ keywords: mathjax, blog, pandoc
  
 ## 图片的使用
 
-![这是一个图片](/images/img.jpg)
+![这是一个图片](/images/Screenshot_20180730_012427.png)
 
 ## 公式的使用
 
