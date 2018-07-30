@@ -96,7 +96,7 @@ comments_provider: gitment
 # https://imsun.net/posts/gitment-introduction/
 gitment:
     owner: iclementine
-    repo: blog_comments
+    repo: iclementine.github.io
     oauth:
         client_id: 927c15e5b053fd46bd3f
         client_secret: 6dc54276f672f1b92823be9e4776699065cf0b4c
