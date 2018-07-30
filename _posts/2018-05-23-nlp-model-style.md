@@ -1,0 +1,95 @@
+---
+layout: post
+title: NLP 模型写作的两种风格
+categories: deep learning
+description: NLP 模型写作的两种风格， 算是对个人代码风格和抽象方式的一种探索和总结。
+keywords: deep learning, dynet
+--- 
+
+
+今天我们来说说 NLP 模型写作的两种风格。首先我们来说说一个 NLP 模型就其输入输出而言， 究竟在干什么？ 从输入输出的转换来说有几种可能。
+
+1. 序列标注（输入一个词序列，转写出等长标签序列）
+2. 结构预测（输入一个词序列，输出树结构， 也可能通过输出转移动作序列再来重构）
+3. 机器翻译（输入一个词序列， 输出一个词序列）
+4. 语言模型(可以视为机器翻译的 identical 版本)
+
+从输入输出的角度来说，都是一个词汇下的序列， 或者是 tagset 下的序列， 或者是 word_set 下的序列。因此最为直接的形式就是使用这些词的原始表示， 比较间接一点的是把词汇映射到一个整数集合， 一般是 {0,1,2,3, |V-1|} 这样的整数序列构成的集合， 好方便做计算。因此一般会有以下的数据处理的流程：
+
+```
+input_words ->
+input_ids ->
+embs -> (transformation)* ->
+probs ->
+(sampler) ->
+	output_ids ->
+	output_words
+(criteron) ->
+	loss
+```
+
+看起来我们可以比较方便地把其中 `input_words -> input_ids` 和 `output_ids -> output_words` 两步单独抽厘出来， 作为词典的功能来实现， 并且把中间的部分作为模型的核心计算单元而存在。这种风格可以被称为 Operator 风格。
+
+## Operator 风格
+
+将这种风格称为 Operator 风格的原因在于这种风格将核心的计算单元抽厘出来， 使得这个模型的功能很纯粹， 它可以合适地被置入计算图中， 它的 Constructor 参数只包含了必要的整数， 来指定一些维度模型结构信息， 以及一些更加基础的 Operator。它的行为尽可能地模仿一个成熟的， 模块化了的模块的行为， 亦即， 它甚至能够作为更大的 Operator 的一部分整合进去， 因此其内部的过程被封装， 接受一定的输入就返回一定的输出， 应该尽可能地不产生副作用。
+
+（P.S. 我们一般认为的对参数只读的函数也就是如此， 不过因为在计算图的话语下来叙述， 就使用 Operator 的说法， 如果一个对象接受图中节点的输出张量（当然， 在 dynet 话语下， 我们会说 Expression） 作为输入， 又可以返回张量 (Expression), 那么它就是一个比较合格的 Operator）.
+
+比如说一个例子：
+
+```python
+class OneLayerMLP(object):
+  def __init__(self, model, num_input, num_hidden, num_out, act=dy.tanh):
+    pc =  model.add_subcollection("one_layer_mlp")
+    self.W1 = pc.add_parameters((num_hidden, num_input))
+    self.W2 = pc.add_parameters((num_out, num_hidden))
+    self.b1 = pc.add_parameters((num_hidden))
+    self.b2 = pc.add_parameters((num_out))
+    self.pc = pc
+    self.act = act
+    self.spec = (num_input, num_hidden, num_out, act)
+
+  def __call__(self, input_exp):
+    W1 = dy.parameter(self.W1)
+    W2 = dy.parameter(self.W2)
+    b1 = dy.parameter(self.b1)
+    b2 = dy.parameter(self.b2)
+    g = self.act
+    return dy.softmax(W2*g(W1*input_exp + b1)+b2)
+
+  # support saving:
+  def param_collection(self): return self.pc
+
+  @staticmethod
+  def from_spec(spec, model):
+    num_input, num_hidden, num_out, act = spec
+    return OneLayerMLP(model, num_input, num_hidden, num_out, act)
+```
+
+这种 Operator 风格不仅仅模仿成熟模块的优美， 容易组合出更大模型的特点， 还会存在一个性能上的好处： 如果 `input_words -> input_ids` 这样的过程也被包含在模型的调用过程中， 那么势必会消耗一些时间， 比较追求性能的用户会觉得这些都算是特征提取的一部分， 而且在训练过程中， 一份数据会被迭代多次， 比如说 (5000)， 如果特征一开始就被提取好了， 那么这将会节省出很多的时间。
+
+比如说从 `input_words 到 input_ids` 需要字典查找， 而且可能 fallback 到 `<unk>` 上，虽然每一个词的查找都只需要 `O(1) ` 的时间， 不过有可能也值得争取啦。而 `output_ids -> output_words` 则只有在 test 时候才会使用。训练时候标签也是输入。
+
+但是性能提升的同时也是有代价的， 代价就是模型更加封装了，我们不能方便地以人类可知觉的方式检视模型内部的状态， 因为模型不能方便地访问词汇表， 因为模型的构造函数只得到了必要的维度信息， 所以它们不知道输入和输出的词汇表， 得到了输出之后需要另外找到原先的输出词典来查找， 而且如果模型是 batched 的， 那么还需要经过两种索引才能得到一个 scalar 用于反查， 也是比较麻烦的。而且这样做往往需要我们在核心计算单元之外另外再封装一层， 用来装模型的词汇表， 以及为核心计算单元预先做好整个数据集的预处理， 一路到 batch 的构建。然后把这些 batch 输入核心计算单元。并且把从核心计算单元的输出反转为输出词汇的序列，一般还需要 batch 和不 batch 两种版本， 一个用于跑分， 一个用于 Demo。
+
+但是 *核心计算单元*, 它就真的可以完全脱离词汇表吗？ 经过仔细思考， 我们会发现， 其实并不能， 而且强行这样做还会带来写模型的许多不便， 虽然也能写啦， 就是写起来比较别扭。比如说我们举几个例子：
+
+1. word-embedding dropout 的事情上， 有一种策略是为了使得 `<unk>` 的向量也能得到充分的训练， 并且不那么生硬地在 vocab 上做 max_size 或者 min_freq 的切断， 而是使用随机化手段， 使得低频词更有可能被随机替换为 `<unk>`, 这并不是 neural network 意义上的 drop-out, 而是可以视为以往的频率估计中 smoothing 的某种传承。 那么就需要访问一个词的 freq 信息， 而且这需要在模型内部动态地处理， 所以还是有一个 vocab， 或者 freq_dist 对象在模型内部比较方便。
+
+2. 另外， 程序的执行需要有一些流控制是和词汇的意义有关的， 比如说文本生成模型在生成了 `</s>` 之后就停止， 如果不是把词典传给模型使得其能够决策何时停止， 那么就需要把这个特殊的终止符号对应的整数传给模型， 而决定这个终止符对应的整数还是要用到词汇， 强行要求模型简洁， 不包含词汇， 反而会增加耦合， 它要求模型中的 `<eos>` 和词典中的 `<eos>` 对应的整数相同， 这增加了麻烦的程度。
+
+3. 模型持有词汇表使得检视模型的状态和输出更加容易。比如说语言生成模型， 直接生成一个句子比输出一个 `(seq_len, batch_size)` 的矩阵更能让人对模型的表现有知觉的评价， 比如模型是否正常， 内部是否犯了什么错误。比如 parser 模型， 直接打印出句子的文本形式和 `head -> dependent: deprel` 比输出一系列的数字转移动作， 或者转移动作更能让然直观地看出出现了什么错误。当然， 我已经决定了比较好的形式是 `form, upos, xpos, deprel, transitions` 的形式来表现句子， 这样对于模型和人都比较地方便。
+
+## Battery-included 风格
+
+通过以上的一些讨论， 我来表示以下个人的一些爱好。那就是把模型写得如同一个模型， 它本身就是为了完成一项具体的任务或者工作而设计的， 因此节制地而又称职地完成其任务就是最好的选择。而不必考虑这个模型本身能过多大程度地被复用， 因为很多模型都是端到端的， 真的能够复用是少之又少的。你只需要熟悉这个模型的思想， 换什么库， 用什么形式的数据都能具体地实现一番就可以了。
+
+而对于一些很常见的操作， 它们不是一项具体的任务， 把一个操作所需要的实体封装一下， 成为一个 Operator 是很常见也是很简单的操作， 这和我们把模型写得完整， battery included 是不矛盾的。比如说在我们的模型中常常用到的功能模块， 我们也会单独封装成一个模块。比如 OneLayerMLP, 比如一些官方封装的 LSTMBuilder, BiRNNBuilder, 而且这些封装很直观而又不失灵活性， 这是值得我们学习的， 以及我自己也封装了一个 BiLinear 用于图解析算法。这些都是很自然的事情。
+
+这样我们就不需要一个两层封装的模型， 而是一个单层的模型。模型会自己处理 word2idx, idx2word 之类的事情。这么说来， 突然我发现自己从对 `torchtext` 的崇拜中毕业了呢。Field 基本上可以不用了， 对于具体的数据自己写 parser 就可以了， 而 `Vocab` 类则是我从 `torchtext` 中学到的很宝贵的东西， 如何去优雅高效地封装一个词典， 因为模型也要用到它， 所以好好实现一个词典类很重要。
+
+另外， `Vocab` 类持有词向量也是一个比较好的设计， 这样在建立模型中的 `lookup parameters` 的时候就可以逐个把这些向量复制过去了。具体的操作是 `word -> vector`, 然后通过 `word -> id -> lookup[id] -> vector` 的路径复制过去。
+
+Warning: 封装也会失去灵活性哦。比如说当我想要两个单隐藏层的 MLP 共享 hidden layer, 那么干脆就不要了， 直接用两个 Linear 或者直接写 `Wx+b` 好了。
+
