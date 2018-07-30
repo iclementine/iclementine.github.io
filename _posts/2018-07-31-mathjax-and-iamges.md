@@ -20,3 +20,10 @@ $$
 p(y_i|x) = \frac{e^{w^{T}x+b}}{Z}
 $$
 
+## 代码高亮
+
+```python
+import nltk
+print("what's new!")
+```
+
