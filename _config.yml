@@ -96,10 +96,10 @@ comments_provider: gitment
 # https://imsun.net/posts/gitment-introduction/
 gitment:
     owner: iclementine
-    repo: iclementine.github.io
+    repo: blog_comments
     oauth:
-        client_id: 9b927e398c5a4595d2e3
-        client_secret: eda035f91e5a40e2d19d811f0bb66e5eeab32501
+        client_id: 927c15e5b053fd46bd3f
+        client_secret: 6dc54276f672f1b92823be9e4776699065cf0b4c
 # https://github.com/gitalk/gitalk#install
 #gitalk:
     #owner: mzlogin
