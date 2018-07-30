@@ -1,6 +1,6 @@
 # 码志
 
-我的个人博客：<https://mazhuang.org>，欢迎 Star 和 Fork。
+我的个人博客：<https://iclementine.github.io>，欢迎 Star 和 Fork 原作者 <https://mazhuang.org>。
 
 ## 概览
 
@@ -16,7 +16,7 @@
 
 ## 效果预览
 
-**[在线预览 &rarr;](https://mazhuang.org)**
+**[在线预览 &rarr;](https://iclementine.github.io)**
 
 ![screenshot home](https://mazhuang.org/assets/images/screenshots/home.png)
 

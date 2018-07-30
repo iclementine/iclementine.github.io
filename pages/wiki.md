@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Wiki
-description: 人越学越觉得自己无知
+description: wiki 是一个整理系统只是的更好的地方哦
 keywords: 维基, Wiki
 comments: false
 menu: 维基

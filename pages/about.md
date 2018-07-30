@@ -1,19 +1,17 @@
 ---
 layout: page
 title: About
-description: 打码改变世界
-keywords: Zhuang Ma, 马壮
+description: 整理笔记的地方
+keywords: Clementine
 comments: true
 menu: 关于
 permalink: /about/
 ---
 
-我是马壮，码而生，码而立。
-
-仰慕「优雅编码的艺术」。
-
-坚信熟能生巧，努力改变人生。
-
+研究自然语言处理， 主要方向是语言结构预测， 熟悉依存句法分析。
+Deep Learning 学习者， 熟悉 dynet, pytorch 和 tensorflow, 喜欢观察轮子和造轮子。
+openSUSE 和 KDE 用户， 喜欢 simple by default, powerful when needed 的东西.
+喜欢简洁方便的文档写作， latex, markdown, pandoc 之类。
 ## 联系
 
 {% for website in site.data.social %}
