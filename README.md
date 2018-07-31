@@ -1,4 +1,4 @@
-# 码志
+# 个人博客
 
 我的个人博客：<https://iclementine.github.io>，欢迎 Star 和 Fork 原作者 <https://mazhuang.org>。
 
@@ -18,7 +18,7 @@
 
 **[在线预览 &rarr;](https://iclementine.github.io)**
 
-![screenshot home](https://mazhuang.org/assets/images/screenshots/home.png)
+![screenshot home](https://iclementine.github.io/assets/images/screenshots/home.png)
 
 ## Fork 指南
 
