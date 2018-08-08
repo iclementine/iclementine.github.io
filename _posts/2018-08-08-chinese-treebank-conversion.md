@@ -167,7 +167,7 @@ VSB Right   VV VE
 
 ## 仍然存在的问题
 
-无论是使用 stanford 转换， 还是 Penn2Malt 带上 (Zhang and Clark, 2008) 的规则， 都会遇到 `DEP` 这种泛用类型的事情， 这种标准对于用提升 LAS 来提升 UAS 这个思路应该不是一个好的因素。关于 `DEP` 的说明， 可以查看印第安纳大学的这个 [Conversions between dependencies constituencies](http://cl.indiana.edu/~md7/11/715/slides/03-convert/03d-convert3.pdf) . 里面证明了这个做法， `DEP` 就是一种无奈之举。
+无论是使用 stanford 转换， 还是 Penn2Malt 带上 (Zhang and Clark, 2008) 的规则， 都会遇到 `DEP` 这种泛用类型的事情， 这种标准对于用提升 LAS 来提升 UAS 这个思路应该不是一个好的因素。关于 `DEP` 的说明， 可以查看印第安纳大学的这个 [Conversions between dependencies constituencies](http://cl.indiana.edu/~md7/11/715/slides/03-convert/03d-convert1.pdf) . 里面证明了这个做法， `DEP` 就是一种无奈之举。
 
 Work in Progress!
 
