@@ -92,12 +92,11 @@ java -mx1g edu.stanford.nlp.trees.international.pennchinese.ChineseGrammaticalSt
 
 [Penn2Malt](http://stp.lingfil.uu.se/~nivre/research/Penn2Malt.html) 是 Joakim Nivre 的成果， 应该是当年为了开发 MaltParser 作的工作。其中关于 deprel 的控制项有三个选项。
 
->
-\<deprel\> is a flag that determines which dependency labels will be used; there are currently three options:
->1 = Penn labels: phrase label + head label + dependent label (à la Collins)
->2 = Penn labels: dependent label only
->3 = Malt: hard-coded mapping to dependency labels (SBJ, OBJ, PRD, NMOD, VMOD, etc.)
->When Penn labels are used, only phrase labels are used, except that -SBJ and -PRD are retained on NPs, and -OBJ is added to NPs under VP that lack an adverbial function tag.
+>\<deprel\> is a flag that determines which dependency labels will be used; there are currently three options:
+1 = Penn labels: phrase label + head label + dependent label (à la Collins)
+2 = Penn labels: dependent label only
+3 = Malt: hard-coded mapping to dependency labels (SBJ, OBJ, PRD, NMOD, VMOD, etc.)
+When Penn labels are used, only phrase labels are used, except that -SBJ and -PRD are retained on NPs, and -OBJ is added to NPs under VP that lack an adverbial function tag.
 
 一般都是选择 3 的啦。因为这样使用的是比较简洁的 deprel 体系， 而以上的两种都是靠短语结构树库中的信息拼接出来的， 里面并没有简洁的 deprel.
 
