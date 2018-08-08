@@ -93,11 +93,11 @@ java -mx1g edu.stanford.nlp.trees.international.pennchinese.ChineseGrammaticalSt
 [Penn2Malt](http://stp.lingfil.uu.se/~nivre/research/Penn2Malt.html) 是 Joakim Nivre 的成果， 应该是当年为了开发 MaltParser 作的工作。其中关于 deprel 的控制项有三个选项。
 
 >
-<deprel> is a flag that determines which dependency labels will be used; there are currently three options:
-1 = Penn labels: phrase label + head label + dependent label (à la Collins)
-2 = Penn labels: dependent label only
-3 = Malt: hard-coded mapping to dependency labels (SBJ, OBJ, PRD, NMOD, VMOD, etc.)
-When Penn labels are used, only phrase labels are used, except that -SBJ and -PRD are retained on NPs, and -OBJ is added to NPs under VP that lack an adverbial function tag.
+\<deprel\> is a flag that determines which dependency labels will be used; there are currently three options:
+>1 = Penn labels: phrase label + head label + dependent label (à la Collins)
+>2 = Penn labels: dependent label only
+>3 = Malt: hard-coded mapping to dependency labels (SBJ, OBJ, PRD, NMOD, VMOD, etc.)
+>When Penn labels are used, only phrase labels are used, except that -SBJ and -PRD are retained on NPs, and -OBJ is added to NPs under VP that lack an adverbial function tag.
 
 一般都是选择 3 的啦。因为这样使用的是比较简洁的 deprel 体系， 而以上的两种都是靠短语结构树库中的信息拼接出来的， 里面并没有简洁的 deprel.
 
@@ -107,8 +107,7 @@ When Penn labels are used, only phrase labels are used, except that -SBJ and -PR
 
 [Chen and Manning, 2014](https://cs.stanford.edu/~danqi/papers/emnlp2014.pdf) 中使用的树库转换方式就是使用 Penn2Malt， 使用了 [Zhang and Clark, 2008](http://www.aclweb.org/anthology/D/D08/D08-1059.pdf) 中使用的头节点抽取规则， 这个规则也可以在张岳的 [个人页面](http://www.cs.ox.ac.uk/people/yue.zhang/ctbheadfinding.html) 找到. 一共 22 条， 在论文中还有说明包含一条 default 用来处理没有匹配到的情况， 那样子就 23 条。
 
->
-ADJP	: r ADJP JJ AD; r 
+>ADJP	: r ADJP JJ AD; r 
 ADVP	: r ADVP AD CS JJ NP PP P VA VV; r 
 CLP	: r CLP M NN NP; r 
 CP	: r CP IP VP; r 
@@ -137,8 +136,7 @@ FRAG : r VV NR NN NT; r
 
 那么 [Sun and Jurafsky, 2004](https://web.stanford.edu/~jurafsky/Sun-Jurafsky-HLT-NAACL04.pdf), 是一片关于汉语的浅层语义分析的文章， 其中的规则是是样子的呢？
 
->
-Parent  Direction   Priority List
+>Parent  Direction   Priority List
 ADJP    Right   ADJP JJ AD
 ADVP    Right   ADVP AD CS JJ NP PP P VA VV
 CLP Right   CLP M NN NP
