@@ -107,7 +107,8 @@ java -mx1g edu.stanford.nlp.trees.international.pennchinese.ChineseGrammaticalSt
 
 [Chen and Manning, 2014](https://cs.stanford.edu/~danqi/papers/emnlp2014.pdf) 中使用的树库转换方式就是使用 Penn2Malt， 使用了 [Zhang and Clark, 2008](http://www.aclweb.org/anthology/D/D08/D08-1059.pdf) 中使用的头节点抽取规则， 这个规则也可以在张岳的 [个人页面](http://www.cs.ox.ac.uk/people/yue.zhang/ctbheadfinding.html) 找到. 一共 22 条， 在论文中还有说明包含一条 default 用来处理没有匹配到的情况， 那样子就 23 条。
 
->ADJP	: r ADJP JJ AD; r 
+```
+ADJP	: r ADJP JJ AD; r 
 ADVP	: r ADVP AD CS JJ NP PP P VA VV; r 
 CLP	: r CLP M NN NP; r 
 CP	: r CP IP VP; r 
@@ -129,6 +130,7 @@ VPT	: l VA VV; l
 VRD	: l VV VA; l 
 VSB	: r VV VE; r 
 FRAG : r VV NR NN NT; r 
+```
 
 而在 (Zhang and Clark, 2008) 中, 又有提及到这个规则文件主要来源。
 
@@ -136,7 +138,8 @@ FRAG : r VV NR NN NT; r
 
 那么 [Sun and Jurafsky, 2004](https://web.stanford.edu/~jurafsky/Sun-Jurafsky-HLT-NAACL04.pdf), 是一片关于汉语的浅层语义分析的文章， 其中的规则是是样子的呢？
 
->Parent  Direction   Priority List
+```
+Parent  Direction   Priority List
 ADJP    Right   ADJP JJ AD
 ADVP    Right   ADVP AD CS JJ NP PP P VA VV
 CLP Right   CLP M NN NP
@@ -157,6 +160,7 @@ VP  Left    VE VC VV VNV VPT VRD VSB VCD VP
 VPT Left    VA VV
 VRD Left    VVl VA
 VSB Right   VV VE 
+```
 
 大约的意义也是比较清楚的， 前面是一种 Constituent 的类型， 如果 Direction 是 Left, 那么就从左往右扫描， 从 Priority List 最高优先级的开始选， 而且这个规则是递归的， 比如 `ADJP` 最有限的还是 `ADJP` 那么就跳入下一层进行选取， 以此类推。一共 20 条规则。
 
@@ -164,7 +168,7 @@ VSB Right   VV VE
 
 ## 仍然存在的问题
 
-无论是使用 stanford 转换， 还是 Penn2Malt 带上 (Zhang and Clark, 2008) 的规则， 都会遇到 `DEP` 这种泛用类型的事情， 这种标准对于用提升 LAS 来提升 UAS 这个思路应该不是一个好的因素。关于 `DEP` 的说明， 可以查看印第安纳大学的这个 [Conversions between dependencies &constituencies](http://cl.indiana.edu/~md7/11/715/slides/03-convert/03d-convert3.pdf). 里面证明了这个做法， `DEP` 就是一种无奈之举。
+无论是使用 stanford 转换， 还是 Penn2Malt 带上 (Zhang and Clark, 2008) 的规则， 都会遇到 `DEP` 这种泛用类型的事情， 这种标准对于用提升 LAS 来提升 UAS 这个思路应该不是一个好的因素。关于 `DEP` 的说明， 可以查看印第安纳大学的这个 [Conversions between dependencies constituencies](http://cl.indiana.edu/~md7/11/715/slides/03-convert/03d-convert3.pdf) . 里面证明了这个做法， `DEP` 就是一种无奈之举。
 
 Work in Progress!
 
