@@ -7,7 +7,7 @@ keywords: treebank, parsing
 --- 
 
 
-首先， 进行树库转换主要是为了利用已有的标注成果， 进行依存句法解析研究的时候得到的格式是句子中词和词的依存关系以及依存关系类型。常见的格式有 Malt-Tab 格式， Conll-X 格式， Cobll-U 格式。
+首先， 进行树库转换主要是为了利用已有的标注成果， 进行依存句法解析研究的时候得到的格式是句子中词和词的依存关系以及依存关系类型。常见的格式有 Malt-Tab 格式， Conll-X 格式， Conll-U 格式。
 
 ## 关于树库转换
 
@@ -42,8 +42,8 @@ Conllu-U 格式可以参考 [Conllu-U Format](http://universaldependencies.org/f
 4. UPOS: Universal part-of-speech tag.
 5. XPOS: Language-specific part-of-speech tag; underscore if not available.
 6. FEATS: List of morphological features from the universal feature inventory or from a defined language-specific extension; underscore if not available.
-7.HEAD: Head of the current word, which is either a value of ID or zero (0).
-8.DEPREL: Universal dependency relation to the HEAD (root iff HEAD = 0) or a defined language-specific subtype of one.
+7. HEAD: Head of the current word, which is either a value of ID or zero (0).
+8. DEPREL: Universal dependency relation to the HEAD (root iff HEAD = 0) or a defined language-specific subtype of one.
 9. DEPS: Enhanced dependency graph in the form of a list of head-deprel pairs.
 10. MISC: Any other annotation.
 
@@ -93,10 +93,10 @@ java -mx1g edu.stanford.nlp.trees.international.pennchinese.ChineseGrammaticalSt
 [Penn2Malt](http://stp.lingfil.uu.se/~nivre/research/Penn2Malt.html) 是 Joakim Nivre 的成果， 应该是当年为了开发 MaltParser 作的工作。其中关于 deprel 的控制项有三个选项。
 
 >\<deprel\> is a flag that determines which dependency labels will be used; there are currently three options:
-1 = Penn labels: phrase label + head label + dependent label (à la Collins)
-2 = Penn labels: dependent label only
-3 = Malt: hard-coded mapping to dependency labels (SBJ, OBJ, PRD, NMOD, VMOD, etc.)
-When Penn labels are used, only phrase labels are used, except that -SBJ and -PRD are retained on NPs, and -OBJ is added to NPs under VP that lack an adverbial function tag.
+>1 = Penn labels: phrase label + head label + dependent label (à la Collins)
+>2 = Penn labels: dependent label only
+>3 = Malt: hard-coded mapping to dependency labels (SBJ, OBJ, PRD, NMOD, VMOD, etc.)
+>When Penn labels are used, only phrase labels are used, except that -SBJ and -PRD are retained on NPs, and -OBJ is added to NPs under VP that lack an adverbial function tag.
 
 一般都是选择 3 的啦。因为这样使用的是比较简洁的 deprel 体系， 而以上的两种都是靠短语结构树库中的信息拼接出来的， 里面并没有简洁的 deprel.
 
