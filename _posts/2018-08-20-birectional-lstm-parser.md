@@ -80,7 +80,9 @@ $$ parse(s) = argmax_{y \in \mathcal{Y}(s)} \sum_{(h,m) \in \mathcal{y}} score(\
     $$ score_{global}(s, y) = \sum_{(h,m) \in y} score(\phi(s, h, m)) = \sum_{(h,m) \in y}MLP(v_h \circ v_m)$$
     其中 $v_i = BIRNN(x_{1:n}, i)$
     
-2. 目标函数是一个 hinge loss， 事实上是一个标准的多分类的 hinge loss, 但是可能使用结构化的 hinge loss 会更好。
+2. 事实上这篇文章的图算法也有对 lstm 出来之后的词用两个 MLP 分别提取特征得到用于头和用于依存的两个不同的向量， 这也不是 deep biaffine 的独创， 所以 deep biaffine 的特别之出就是那个神奇的 biaffine 和大量的 dropout。
+    
+3. 目标函数是一个 hinge loss， 事实上是一个标准的多分类的 hinge loss, 但是可能使用结构化的 hinge loss 会更好。
 
     $$ max(0, 1 - \sum_{(h,m) \in y}MLP(v_h \circ v_m)) + max_{y^{'} \neq y} \sum_{(h, m) \in y^{'}} MLP(v_h \circ v_m)$$
     
