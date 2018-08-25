@@ -34,7 +34,7 @@ keywords: treebank, parsing
 Embedding， 包含词向量（也可以使用预训练的词向量）， 词性的嵌入。
 1. 实际实验中使用了和 (Dyer et al, 2015) 一样的 external embedding. 
 2. POS 使用了和 (Dyer et al, 2015) 中一样的外部 tagger 预测的词性标记。
-3. word\_dropout, 或者称为 UNK\_replace.(Iyyer et al, 2015) 中的做法， 在训练的时候， 所有的词都有一定的概率被替换为 UNK， 概率和词频的关系是 $p_unk(w) = \frac{\alpha}{#(w) + \alpha}$ .而且如果词被 drop 成了 unk, 那么外部的 embedding 也被以 0.5 的概率被 drop.
+3. word\_dropout, 或者称为 UNK\_replace.(Iyyer et al, 2015) 中的做法， 在训练的时候， 所有的词都有一定的概率被替换为 UNK， 概率和词频的关系是 $p_{unk}(w) = \frac{\alpha}{f_w + \alpha}$ .而且如果词被 drop 成了 unk, 那么外部的 embedding 也被以 0.5 的概率被 drop.
 4. 和 Dyer 一样， 随机初始化的词向量和预训练的词向量是拼接在一起的， 而且外部词向量也参与更新。
 5. 数值设定， 词向量维度 100， POS 向量维度 25, unk replace 参数 alpha 0.25.
 
