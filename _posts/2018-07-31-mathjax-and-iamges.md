@@ -12,7 +12,7 @@ keywords: mathjax, blog, pandoc
 
 ## 公式的使用
 
-这是一个行内公式 $ y=a^2+b $
+这是一个行内公式 $$ y=a^2+b $$
 
 这是一个显示公式
 
