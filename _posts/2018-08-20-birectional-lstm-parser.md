@@ -34,7 +34,7 @@ keywords: treebank, parsing
 Embedding， 包含词向量（也可以使用预训练的词向量）， 词性的嵌入。
 1. 实际实验中使用了和 (Dyer et al, 2015) 一样的 external embedding. 
 2. POS 使用了和 (Dyer et al, 2015) 中一样的外部 tagger 预测的词性标记。
-3. word\_dropout, 或者称为 UNK\_replace.(Iyyer et al, 2015) 中的做法， 在训练的时候， 所有的词都有一定的概率被替换为 UNK， 概率和词频的关系是 \\( p_{unk}(w) = \frac{\alpha}{f_w + \alpha} \\) .而且如果词被 drop 成了 unk, 那么外部的 embedding 也被以 0.5 的概率被 drop.
+3. word\_dropout, 或者称为 UNK\_replace.(Iyyer et al, 2015) 中的做法， 在训练的时候， 所有的词都有一定的概率被替换为 UNK， 概率和词频的关系是 $ p_{unk}(w) = \frac{\alpha}{f_w + \alpha} $ .而且如果词被 drop 成了 unk, 那么外部的 embedding 也被以 0.5 的概率被 drop.
 4. 和 Dyer 一样， 随机初始化的词向量和预训练的词向量是拼接在一起的， 而且外部词向量也参与更新。
 5. 数值设定， 词向量维度 100， POS 向量维度 25, unk replace 参数 alpha 0.25.
 
@@ -46,24 +46,24 @@ Embedding， 包含词向量（也可以使用预训练的词向量）， 词性
 ![biLSTM transition parser](/assets/images/kiperwasser_bilstm_transition.png)
 
 1. Arc-Hybrid 转移系统。
-2. 状态表示。\\( \phi(c) = v_{s_2} v_{s_1} v_{s_0} v_{b_0} \\) , \\( v_i = BILSTM(x_{1:n}, i) \\), 意思就是说特征表现就直接使用了 4 个位置模板， 提取这四个位置的 bilstm 输出， 拼接在一起就 OK 了。
-3. 评分函数 \\( score_{\theta}(x, t) = MLP_{\theta}(x)[t] \\). 
+2. 状态表示。$ \phi(c) = v_{s_2} v_{s_1} v_{s_0} v_{b_0} $ , $ v_i = BILSTM(x_{1:n}, i) $, 意思就是说特征表现就直接使用了 4 个位置模板， 提取这四个位置的 bilstm 输出， 拼接在一起就 OK 了。
+3. 评分函数 $ score_{\theta}(x, t) = MLP_{\theta}(x)[t] $. 
 4. 解码算法， 贪心解码， 每次都选择得分高的那个 transition.
 5. 训练时候的 Dynamic oracle 和 Explorative Training.
 
-    一般来说， 在多分类任务中， 我们会定义 hinge loss, \\( max(0, m - score_{y_g} + max_{y_i \neq y_g} score(y_i)) \\), 意思是只要正确分类的得分不比错误分类中得分最高的那一类高出 m， 那么就要进行参数更新。这是一种经典的 one-one 形式的 hinge loss, 当然也还有 one to rest 的形式， 是正确分类和每一个错误分类都算一下 hinge loss 然后求和。但是我们一般不用那一种啦。
+    一般来说， 在多分类任务中， 我们会定义 hinge loss, $ max(0, m - score_{y_g} + max_{y_i \neq y_g} score(y_i)) $, 意思是只要正确分类的得分不比错误分类中得分最高的那一类高出 m， 那么就要进行参数更新。这是一种经典的 one-one 形式的 hinge loss, 当然也还有 one to rest 的形式， 是正确分类和每一个错误分类都算一下 hinge loss 然后求和。但是我们一般不用那一种啦。
     
     然后在 transition-based parsing 问题中，实际的场景就是在一个 parse state 下选择最合适的转移的问题。这同样也是一个多分类问题， 但 dynamic oracle 告诉我们的是， 正确的句法树可以由多个转移动作序列来得到， 所以在具体的某个状态下的时候，我们事实上是可以选择多个可能的转移动作的。这就有点类似 multi-label 的问题了。
     
     这篇文章中使用了一种稍微特别的 one to one 形式的 hinge loss. gold label 不再是一个确定的值， 而是一个 G 集合。 loss 的定义如下
     
-    \\[  max(0, 1 - max_{t_o \in G}MLP(\phi(c))[t_o] + max_{t_{p} \in A\setminus G}MLP(\phi(c))[t_p])  \\]
+    $$  max(0, 1 - max_{t_o \in G}MLP(\phi(c))[t_o] + max_{t_{p} \in A\setminus G}MLP(\phi(c))[t_p])  $$
     
     意思就是使得 Gold 转移动作中得分最高的那个的分数要比 non-Gold 转移动作中得分自高的那个的分数高 1. G 的定义是动态的， 意思是说即使已经出了错， 这个状态下不可能达到完美的句法树了， 也仍然要定义这种情况下的 G. 所以 oracle 是在 parsing 的过程中动态计算的， 而不是根据转移动作一开始就推导好的。所以这个如果做好的， 那么我们就可以不必在构建句子的时候人为地产生一个 transitions 字段。但是这也要算法能够高效地计算出合适的 G, 最好能够在 O(1) 的时间内就可以计算出来。 Arc-Eager 和 Arc-Hybrid 是符合这样的要求的， 而 Arc-Standrad 不符合。
     
     定义好了之后， 训练的时候， parser 是直接按照得分最高的转移动作来走的， 而不是用 teacher forcing 来逐步纠正。事实上， 也可以使用概率化的方法来采样。
     
-6.  激进探索。根据论文所说， 即使是在训练过程中也贪心， 模型也会很快就达到比较高的准确率， 从而使得探索比较少， 所以实验中还使用了激进探索的方式。当 non-gold 的转移动作分数低于 gold 转移动作的分数但是差距不大于 margin 常数的时候， 以一定的概率 \\( p_{agg}=0.1 \\) 采用 non-gold 的转移动作。但是这里依然留下了一些模糊的地方， 差距是怎么计算的， gold 的最低分减去 non-gold 的最高分呢还是怎样， non-gold 的选择也很多啊， 是随机选一个呢还是怎样， 这些细节要到代码里面去才能看到了。
+6.  激进探索。根据论文所说， 即使是在训练过程中也贪心， 模型也会很快就达到比较高的准确率， 从而使得探索比较少， 所以实验中还使用了激进探索的方式。当 non-gold 的转移动作分数低于 gold 转移动作的分数但是差距不大于 margin 常数的时候， 以一定的概率 $ p_{agg}=0.1 $ 采用 non-gold 的转移动作。但是这里依然留下了一些模糊的地方， 差距是怎么计算的， gold 的最低分减去 non-gold 的最高分呢还是怎样， non-gold 的选择也很多啊， 是随机选一个呢还是怎样， 这些细节要到代码里面去才能看到了。
 
 ### 基于图的算法的细节
 
@@ -71,32 +71,32 @@ Embedding， 包含词向量（也可以使用预训练的词向量）， 词性
 
 基于图的算法和基于转移的算法一样都使用双向 LSTM 作为 contextualization. 因为使用的简单的一阶图算法， 也就是 Arc-factored 算法， 或者称为 Edge-factored 算法。是因为对一个图的评分被分解为对子图的评分的和。而一阶算法中， 每个子图都只包含一条边， 所以就叫作 arc-factored 算法。对树的评分的定义如下：
 
-\\[  parse(s) = argmax_{y \in \mathcal{Y}(s)} \sum_{(h,m) \in \mathcal{y}} score(\phi(s, h, m)) \\]
+$$  parse(s) = argmax_{y \in \mathcal{Y}(s)} \sum_{(h,m) \in \mathcal{y}} score(\phi(s, h, m)) $$
 
 在这里， 一些的图算法都追踪到了 (MacDonald et al, 2005) 那篇论文。
 
-1. 边的表示函数。使用的是 head 和 dependent 的 bilstm 输出的拼接。 \\( \phi(s, h, m) = BIRNN(x_{1:n}, h) \circ BIRNN(x_{1:n}, m) \\). 整个数的评分函数就是 
+1. 边的表示函数。使用的是 head 和 dependent 的 bilstm 输出的拼接。 $ \phi(s, h, m) = BIRNN(x_{1:n}, h) \circ BIRNN(x_{1:n}, m) $. 整个数的评分函数就是 
 
-    \\[  score_{global}(s, y) = \sum_{(h,m) \in y} score(\phi(s, h, m)) = \sum_{(h,m) \in y}MLP(v_h \circ v_m) \\]
-    其中 \\( v_i = BIRNN(x_{1:n}, i) \\)
+    $$  score_{global}(s, y) = \sum_{(h,m) \in y} score(\phi(s, h, m)) = \sum_{(h,m) \in y}MLP(v_h \circ v_m) $$
+    其中 $ v_i = BIRNN(x_{1:n}, i) $
     
 2. 事实上这篇文章的图算法也有对 lstm 出来之后的词用两个 MLP 分别提取特征得到用于头和用于依存的两个不同的向量， 这也不是 deep biaffine 的独创， 所以 deep biaffine 的特别之出就是那个神奇的 biaffine 和大量的 dropout。
     
 3. 目标函数是一个 hinge loss， 事实上是一个标准的多分类的 hinge loss, 但是可能使用结构化的 hinge loss 会更好。
 
-    \\[  max(0, 1 - \sum_{(h,m) \in y}MLP(v_h \circ v_m)) + max_{y^{'} \neq y} \sum_{(h, m) \in y^{'}} MLP(v_h \circ v_m) \\]
+    $$  max(0, 1 - \sum_{(h,m) \in y}MLP(v_h \circ v_m)) + max_{y^{'} \neq y} \sum_{(h, m) \in y^{'}} MLP(v_h \circ v_m) $$
     
     这里有一个问题就是无论句子多长， margin 都是一样的， 这不太合理， 换成正确的树和得分高的错误图之间的 hamming loss 似乎更为合理， 那样子就称为 structured hinge loss 了。
     
 3. 对于 Labeled Parsing， 图算法一般都是结构和标签的预测分开的。用于确定依存标签的函数是
 
-    \\[  label(h,m) = argmax_{l \in labels} MLP_{lbl} (v_h \circ v_m)[l] \\]
+    $$  label(h,m) = argmax_{l \in labels} MLP_{lbl} (v_h \circ v_m)[l] $$
     
     这一步分是在 gold - tree 上训练的， loss 应该是使用 neglogprob.
     
 4. 损失增益。这个是 (Taskar et al, 2015) 的方法， hinge loss 计算的时候不仅仅和得分最高的那个错误树对比， 也和错很多的那些树对比。我觉得这样子下去还不如就直接用 naive argmax 了， 也就是独立的头节点选取。增益之后的 loss 函数如下：
 
-    \\[  max(0, 1 - score(x, y) + max_{y^{'} \neq y} \sum_{part \in y^{'}}(score_{locqal}(x, part) + \mathbb{1}_{part \notin y})) \ \\]
+    $$  max(0, 1 - score(x, y) + max_{y^{'} \neq y} \sum_{part \in y^{'}}(score_{locqal}(x, part) + \mathbb{1}_{part \notin y})) \ $$
     
     经过这么一番改动，就已经类似 structured hinge loss 了， 因为 margin 可以视为给错误类标签的补偿， 而在结构预测例子里， 错的部分越多， 那么补偿的也应该越多， 所以标准的 structured hinge loss 用 Hamming Loss 作为补偿。
 
