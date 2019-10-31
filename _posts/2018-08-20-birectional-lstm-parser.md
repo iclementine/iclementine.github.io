@@ -75,7 +75,7 @@ Embedding， 包含词向量（也可以使用预训练的词向量）， 词性
 
 在这里， 一些的图算法都追踪到了 (MacDonald et al, 2005) 那篇论文。
 
-1. 边的表示函数。使用的是 head 和 dependent 的 bilstm 输出的拼接。 \(\phi(s, h, m) = BIRNN(x_{1:n}, h) \circ BIRNN(x_{1:n}, m)\(. 整个数的评分函数就是 
+1. 边的表示函数。使用的是 head 和 dependent 的 bilstm 输出的拼接。 \(\phi(s, h, m) = BIRNN(x_{1:n}, h) \circ BIRNN(x_{1:n}, m)\). 整个数的评分函数就是 
 
     \[ score_{global}(s, y) = \sum_{(h,m) \in y} score(\phi(s, h, m)) = \sum_{(h,m) \in y}MLP(v_h \circ v_m)\]
     其中 \(v_i = BIRNN(x_{1:n}, i)\)
