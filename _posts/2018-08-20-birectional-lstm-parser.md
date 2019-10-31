@@ -43,7 +43,7 @@ Embedding， 包含词向量（也可以使用预训练的词向量）， 词性
 
 ### 基于转移的算法的细节
 
-![biLSTM transition parser](/images/kiperwasser_bilstm_transition.png)
+![biLSTM transition parser](/assets/images/kiperwasser_bilstm_transition.png)
 
 1. Arc-Hybrid 转移系统。
 2. 状态表示。$\phi(c) = v_{s_2} v_{s_1} v_{s_0} v_{b_0}$ , $v_i = BILSTM(x_{1:n}, i)$, 意思就是说特征表现就直接使用了 4 个位置模板， 提取这四个位置的 bilstm 输出， 拼接在一起就 OK 了。
@@ -67,7 +67,7 @@ Embedding， 包含词向量（也可以使用预训练的词向量）， 词性
 
 ### 基于图的算法的细节
 
-![biLSTM graph parser](/images/kiperwasser_bilstm_graph.png)
+![biLSTM graph parser](/assets/images/kiperwasser_bilstm_graph.png)
 
 基于图的算法和基于转移的算法一样都使用双向 LSTM 作为 contextualization. 因为使用的简单的一阶图算法， 也就是 Arc-factored 算法， 或者称为 Edge-factored 算法。是因为对一个图的评分被分解为对子图的评分的和。而一阶算法中， 每个子图都只包含一条边， 所以就叫作 arc-factored 算法。对树的评分的定义如下：
 
@@ -104,7 +104,7 @@ $$ parse(s) = argmax_{y \in \mathcal{Y}(s)} \sum_{(h,m) \in \mathcal{y}} score(\
 
 在 PTB 3 和 CTB 5 上的实验结果如图。
 
-![biLSTM bilstm results](/images/kiperwasser_bilstm_results.png)
+![biLSTM bilstm results](/assets/images/kiperwasser_bilstm_results.png)
 
 内部对比结论是：
 
@@ -115,11 +115,11 @@ $$ parse(s) = argmax_{y \in \mathcal{Y}(s)} \sum_{(h,m) \in \mathcal{y}} score(\
 
 参数设置如图：
 
-![biLSTM bilstm hp](/images/kiperwasser_bilstm_hp.png)
+![biLSTM bilstm hp](/assets/images/kiperwasser_bilstm_hp.png)
 
 ## 去除分析
 
-![biLSTM bilstm ablation](/images/kiperwasser_bilstm_ablation.png)
+![biLSTM bilstm ablation](/assets/images/kiperwasser_bilstm_ablation.png)
 
 ### 图算法
 1. 对于图算法， loss augmentation 也就是 structured hinge loss 很重要。
