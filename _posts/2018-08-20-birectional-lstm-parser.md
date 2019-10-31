@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Simple and Accurate Dependency Parsing Using Bidirectional LSTM Feature Representations 论文和代码阅读
+title: Bist parser 论文和代码阅读
 categories: parsing
 description: bidirectional LSTM parser 依存句法解析模型， 原理和相关论文， 代码解释， 实际测试表现。
 keywords: treebank, parsing
