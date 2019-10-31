@@ -40,7 +40,7 @@ keywords: configure
 
 fairseq 下的 train.py 文件的帮助信息是。
 
-```bash
+```text
 (scientific) [23:00]clementine@SUSE:fairseq> python train.py --help
 usage: train.py [-h] [--no-progress-bar] [--log-interval N]
                 [--log-format {json,none,simple,tqdm}]
