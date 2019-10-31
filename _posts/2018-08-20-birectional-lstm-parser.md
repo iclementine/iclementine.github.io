@@ -57,7 +57,7 @@ Embedding， 包含词向量（也可以使用预训练的词向量）， 词性
     
     这篇文章中使用了一种稍微特别的 one to one 形式的 hinge loss. gold label 不再是一个确定的值， 而是一个 G 集合。 loss 的定义如下
     
-    \[ max(0, 1 - max_{t_o \in G}MLP(\phi(c))[t_o] + max_{t_{p} \in A\\G}MLP(\phi(c))[t_p]) \]
+    \[ max(0, 1 - max_{t_o \in G}MLP(\phi(c))[t_o] + max_{t_{p} \in A\setminus G}MLP(\phi(c))[t_p]) \]
     
     意思就是使得 Gold 转移动作中得分最高的那个的分数要比 non-Gold 转移动作中得分自高的那个的分数高 1. G 的定义是动态的， 意思是说即使已经出了错， 这个状态下不可能达到完美的句法树了， 也仍然要定义这种情况下的 G. 所以 oracle 是在 parsing 的过程中动态计算的， 而不是根据转移动作一开始就推导好的。所以这个如果做好的， 那么我们就可以不必在构建句子的时候人为地产生一个 transitions 字段。但是这也要算法能够高效地计算出合适的 G, 最好能够在 O(1) 的时间内就可以计算出来。 Arc-Eager 和 Arc-Hybrid 是符合这样的要求的， 而 Arc-Standrad 不符合。
     
