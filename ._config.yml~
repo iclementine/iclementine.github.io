@@ -50,10 +50,3 @@ plugins:
  - jekyll-feed
  - jekyll-seo-tag
 
-markdown: kramdown
-exclude:
-  - Gemfile
-  - Gemfile.lock
-kramdown:
-  input: GFM
-  auto_ids: true
