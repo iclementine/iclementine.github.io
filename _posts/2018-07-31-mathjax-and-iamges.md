@@ -16,7 +16,7 @@ keywords: mathjax, blog, pandoc
 
 这是一个显示公式
 
-$$[ p(y_i \|x) = \frac{e^{w^{T}x+b}}{Z} $$
+$$ p(y_i|x) = \frac{e^{w^{T}x+b}}{Z} $$
 
 ## 代码高亮
 
