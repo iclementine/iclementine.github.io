@@ -51,6 +51,7 @@ plugins:
  - jekyll-seo-tag
 
 markdown: kramdown
+mathjax: true
 exclude:
   - Gemfile
   - Gemfile.lock
